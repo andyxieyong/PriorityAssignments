@@ -375,11 +375,9 @@ public class HolistictTest {
 
 		return newRi;
 	}
-	
-	private long getResponseTimeForSBPO(int partition, ArrayList<ArrayList<SporadicTask>> tasks, ArrayList<Resource> resources,
-			long[][] response_time, boolean btbHit, boolean useRi, boolean isMSRP, SporadicTask calTask, int extendCal) {
 
-		boolean isEqual = false;
+	private long getResponseTimeForSBPO(int partition, ArrayList<ArrayList<SporadicTask>> tasks, ArrayList<Resource> resources, long[][] response_time,
+			boolean btbHit, boolean useRi, boolean isMSRP, SporadicTask calTask, int extendCal) {
 
 		long[][] response_time_new = new long[tasks.size()][];
 		for (int i = 0; i < tasks.size(); i++) {
@@ -397,7 +395,10 @@ public class HolistictTest {
 			response_time_plus[partition][i] = tasks.get(partition).get(i).WCET + tasks.get(partition).get(i).pure_resource_execution_time;
 		}
 
-		while (!isEqual) {
+		boolean isEqual = false;
+		boolean shouldFinish = false;
+
+		while (!isEqual && !shouldFinish) {
 			isEqual = true;
 
 			for (int i = 0; i < response_time_plus[partition].length; i++) {
@@ -414,12 +415,15 @@ public class HolistictTest {
 				task.spin = spinDelay(task, tasks, resources, response_time_plus, response_time_plus[partition][j], btbHit, useRi);
 				task.interference = highPriorityInterference(task, tasks, response_time_plus[partition][j]);
 				task.local = localBlocking(task, tasks, resources, response_time_plus, response_time_plus[partition][j], btbHit, useRi, isMSRP);
-				response_time_plus[partition][j] = task.Ri = task.WCET + task.spin + task.interference + task.local;
+				task.Ri = task.WCET + task.spin + task.interference + task.local;
+				response_time_plus[partition][j] = task.Ri > task.deadline * extendCal ? task.deadline * extendCal : task.Ri;
 			}
 
 			for (int i = 0; i < response_time_plus[partition].length; i++) {
-				if (response_time_new[partition][i] != response_time_plus[partition][i])
+				if (response_time_plus[partition][i] != response_time_new[partition][i])
 					isEqual = false;
+				if (tasks.get(partition).get(i).Ri < tasks.get(partition).get(i).deadline * extendCal)
+					shouldFinish = false;
 			}
 
 		}

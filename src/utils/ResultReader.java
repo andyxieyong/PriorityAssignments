@@ -13,270 +13,45 @@ import java.util.List;
 
 public class ResultReader {
 
-	public static void main(String[] args) {
+	// public static void main(String[] args) {
+	//
+	// // schedreader();
+	// // migReader();
+	// for (int i = 1000; i < 1001; i++)
+	// priorityReader(i);
+	// }
 
-//		schedreader();
-//		migReader();
-		for(int i=1000; i<1001;i++)
-			priorityReader(i);
-	}
+	public static void priorityReader(int seed, int NoP, int NoT, int NoA, double rsf, int cs_len, double[] range) {
+		String result = "\n\nMSRP \n";
 
-	public static void schedreader() {
-		String result = "Work Load \n";
-		for (int bigSet = 1; bigSet < 10; bigSet++) {
-
-			for (int smallSet = 1; smallSet < 200; smallSet++) {
-				String filepath = "result/" + "1" + " " + bigSet + " " + smallSet + ".txt";
-
-				List<String> lines = null;
-				try {
-					lines = Files.readAllLines(Paths.get(filepath), StandardCharsets.UTF_8);
-				} catch (IOException e) {
-				}
-				if (lines != null)
-					result += bigSet + "" + smallSet + " " + lines.get(0) + "\n";
-			}
-
-			result += "\n";
-
-		}
-		result += "\n \n CS Length \n";
-
-		for (int bigSet = 1; bigSet < 10; bigSet++) {
-
-			for (int smallSet = 1; smallSet < 10; smallSet++) {
-				String filepath = "result/" + "2" + " " + bigSet + " " + smallSet + ".txt";
-
-				List<String> lines = null;
-				try {
-					lines = Files.readAllLines(Paths.get(filepath), StandardCharsets.UTF_8);
-				} catch (IOException e) {
-				}
-				if (lines != null)
-					result += bigSet + "" + smallSet + " " + lines.get(0) + "\n";
-			}
-
-			result += "\n";
-
-		}
-		result += "\n \n Resource Access \n";
-
-		for (int bigSet = 1; bigSet < 10; bigSet++) {
-
-			for (int smallSet = 1; smallSet < 42; smallSet++) {
-				String filepath = "result/" + "3" + " " + bigSet + " " + smallSet + ".txt";
-
-				List<String> lines = null;
-				try {
-					lines = Files.readAllLines(Paths.get(filepath), StandardCharsets.UTF_8);
-				} catch (IOException e) {
-				}
-
-				if (lines != null)
-					result += bigSet + "" + smallSet + " " + lines.get(0) + "\n";
-			}
-
-			result += "\n";
-
-		}
-		result += "\n \n Parallelism \n";
-
-		for (int bigSet = 1; bigSet < 10; bigSet++) {
-
-			for (int smallSet = 1; smallSet < 42; smallSet++) {
-				String filepath = "result/" + "4" + " " + bigSet + " " + smallSet + ".txt";
-
-				List<String> lines = null;
-				try {
-					lines = Files.readAllLines(Paths.get(filepath), StandardCharsets.UTF_8);
-				} catch (IOException e) {
-				}
-
-				if (lines != null)
-					result += bigSet + "" + smallSet + " " + lines.get(0) + "\n";
-			}
-
-			result += "\n";
-
-		}
-
-		System.out.println(result);
-
-		PrintWriter writer = null;
-		try {
-			writer = new PrintWriter(new FileWriter(new File("result/all.txt"), false));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		writer.println(result);
-		writer.close();
-	}
-
-	public static void migReader() {
-		String result = "Work Load \n";
-		for (int bigSet = 1; bigSet < 6; bigSet++) {
-
-			// result += "access: " + (2 + (bigSet - 1) * 3) + " and rsf: " +
-			// (.2 + (bigSet - 1) * .3) + "\n";
-
-			for (int smallSet = 1; smallSet < 20; smallSet++) {
-				String filepath = "result/" + "mig 1" + " " + bigSet + " " + smallSet + ".txt";
-
-				List<String> lines = null;
-				try {
-					lines = Files.readAllLines(Paths.get(filepath), StandardCharsets.UTF_8);
-				} catch (IOException e) {
-				}
-				if (lines != null)
-					result += bigSet + "" + smallSet + " " + lines.get(0) + "\n";
-			}
-
-			result += "\n";
-
-		}
-		result += "\n \n CS Length \n";
-
-		for (int bigSet = 1; bigSet < 4; bigSet++) {
-			result += "tasks per core: " + (3 + (bigSet - 1) * 2) + "\n";
-
-			for (int smallSet = 1; smallSet < 301; smallSet++) {
-				String filepath = "result/" + "mig 2" + " " + bigSet + " " + smallSet + ".txt";
-
-				List<String> lines = null;
-				try {
-					lines = Files.readAllLines(Paths.get(filepath), StandardCharsets.UTF_8);
-				} catch (IOException e) {
-				}
-				if (lines != null)
-					result += bigSet + "" + smallSet + " " + lines.get(0) + "\n";
-			}
-
-			result += "\n";
-
-		}
-		result += "\n \n Resource Access \n";
-
-		for (int bigSet = 1; bigSet < 4; bigSet++) {
-			result += "tasks per core: " + (3 + (bigSet - 1) * 2) + "\n";
-
-			for (int smallSet = 1; smallSet < 11; smallSet++) {
-				String filepath = "result/" + "mig 3" + " " + bigSet + " " + smallSet + ".txt";
-
-				List<String> lines = null;
-				try {
-					lines = Files.readAllLines(Paths.get(filepath), StandardCharsets.UTF_8);
-				} catch (IOException e) {
-				}
-
-				if (lines != null)
-					result += bigSet + "" + smallSet + " " + lines.get(0) + "\n";
-			}
-
-			result += "\n";
-
-		}
-
-		result += "\n \n Parallel \n";
-
-		for (int partitions = 0; partitions < 50; partitions++) {
-			// result += "tasks per core: " + (4 + 2 * partitions) + "\n";
-
-			String filepath = "result/" + "mig 4" + " " + 1 + " " + (partitions) + ".txt";
+		for (int i = 0; i < range.length; i++) {
+			String filepath = "result/" + seed + " " + "MSRP" + " " + (int)(NoP == -1 ? range[i] : NoP) + " " + (int)(NoT == -1 ? range[i] : NoT) + " "
+					+ (int)(NoA == -1 ? range[i] : NoA) + " " + (rsf == -1 ? range[i] : rsf) + " " + (int)(cs_len == -1 ? range[i] : cs_len) + ".txt";
 
 			List<String> lines = null;
 			try {
 				lines = Files.readAllLines(Paths.get(filepath), StandardCharsets.UTF_8);
 			} catch (IOException e) {
 			}
-
 			if (lines != null)
-				result += 1 + "" + (partitions) + " " + lines.get(0) + "\n";
-
-			// result += "\n";
-
+				result += seed + " " + "MSRP" + " " + (NoP == -1 ? range[i] : NoP) + " " + (NoT == -1 ? range[i] : NoT) + " " + (NoA == -1 ? range[i] : NoA)
+						+ " " + (rsf == -1 ? range[i] : rsf) + " " + (cs_len == -1 ? range[i] : cs_len) + " : " + lines.get(0) + "\n";
 		}
 
-		System.out.println(result);
+		result += "\n\nMrsP \n";
 
-		PrintWriter writer = null;
-		try {
-			writer = new PrintWriter(new FileWriter(new File("result/all.txt"), false));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		for (int i = 0; i < range.length; i++) {
+			String filepath = "result/" + seed + " " + "MrsP" + " " + (int)(NoP == -1 ? range[i] : NoP) + " " + (int)(NoT == -1 ? range[i] : NoT) + " "
+					+ (int)(NoA == -1 ? range[i] : NoA) + " " + (rsf == -1 ? range[i] : rsf) + " " + (int)(cs_len == -1 ? range[i] : cs_len) + ".txt";
 
-		writer.println(result);
-		writer.close();
-	}
-
-	public static void priorityReader(int seed) {
-		String result = "\n \n MSRP \n";
-
-		for (int bigSet = 1; bigSet < 10; bigSet++) {
-
-			for (int smallSet = 1; smallSet < 10; smallSet++) {
-				String filepath = "result/" + seed+" "+ "MSRP 2" + " " + bigSet + " " + smallSet + ".txt";
-
-				List<String> lines = null;
-				try {
-					lines = Files.readAllLines(Paths.get(filepath), StandardCharsets.UTF_8);
-				} catch (IOException e) {
-				}
-				if (lines != null)
-					result += bigSet + "" + smallSet + " " + lines.get(0) + "\n";
+			List<String> lines = null;
+			try {
+				lines = Files.readAllLines(Paths.get(filepath), StandardCharsets.UTF_8);
+			} catch (IOException e) {
 			}
-
-			result += "\n";
-
-		}
-
-//		result += "\n \n PWLP \n";
-//
-//		for (int bigSet = 1; bigSet < 10; bigSet++) {
-//
-//			for (int smallSet = 1; smallSet < 10; smallSet++) {
-//				String filepath = "result/" + "PWLP 2" + " " + bigSet + " " + smallSet + ".txt";
-//
-//				List<String> lines = null;
-//				try {
-//					lines = Files.readAllLines(Paths.get(filepath), StandardCharsets.UTF_8);
-//				} catch (IOException e) {
-//				}
-//				if (lines != null)
-//					result += bigSet + "" + smallSet + " " + lines.get(0) + "\n";
-//			}
-//
-//			result += "\n";
-//
-//		}
-
-		result += "\n \n MrsP \n";
-
-		for (int bigSet = 1; bigSet < 10; bigSet++) {
-
-			for (int smallSet = 1; smallSet < 10; smallSet++) {
-				String filepath = "result/"+ seed+" " + "MrsP 2" + " " + bigSet + " " + smallSet + ".txt";
-
-				List<String> lines = null;
-				try {
-					lines = Files.readAllLines(Paths.get(filepath), StandardCharsets.UTF_8);
-				} catch (IOException e) {
-				}
-				if (lines != null)
-					result += bigSet + "" + smallSet + " " + lines.get(0) + "\n";
-			}
-
-			result += "\n";
-
+			if (lines != null)
+				result += seed + " " + "MrsP" + " " + (NoP == -1 ? range[i] : NoP) + " " + (NoT == -1 ? range[i] : NoT) + " " + (NoA == -1 ? range[i] : NoA)
+						+ " " + (rsf == -1 ? range[i] : rsf) + " " + (cs_len == -1 ? range[i] : cs_len) + " : " + lines.get(0) + "\n";
 		}
 
 		System.out.println(result);

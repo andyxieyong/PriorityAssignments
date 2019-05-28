@@ -219,48 +219,48 @@ public class SimpleSystemGenerator {
 		for (int i = 0; i < number_of_resources; i++) {
 			long cs_len = 0;
 			if (csl == -1) {
+				switch (cs_len_range) {
+				case VERY_LONG_CSLEN:
+					cs_len = ran.nextInt(300 - 200) + 201;
+					break;
+				case LONG_CSLEN:
+					cs_len = ran.nextInt(200 - 100) + 101;
+					break;
+				case MEDIUM_CS_LEN:
+					cs_len = ran.nextInt(100 - 50) + 51;
+					break;
+				case SHORT_CS_LEN:
+					cs_len = ran.nextInt(50 - 15) + 16;
+					break;
+				case VERY_SHORT_CS_LEN:
+					cs_len = ran.nextInt(15) + 1;
+					break;
+				case Random:
+					cs_len = ran.nextInt(300) + 1;
+				default:
+					break;
+				}
 //				switch (cs_len_range) {
 //				case VERY_LONG_CSLEN:
-//					cs_len = ran.nextInt(300 - 200) + 201;
+//					cs_len = ran.nextInt(800) + 1;
 //					break;
 //				case LONG_CSLEN:
-//					cs_len = ran.nextInt(200 - 100) + 101;
+//					cs_len = ran.nextInt(600) + 1;
 //					break;
 //				case MEDIUM_CS_LEN:
-//					cs_len = ran.nextInt(100 - 50) + 51;
+//					cs_len = ran.nextInt(400) + 1;
 //					break;
 //				case SHORT_CS_LEN:
-//					cs_len = ran.nextInt(50 - 15) + 16;
+//					cs_len = ran.nextInt(200 ) + 1;
 //					break;
 //				case VERY_SHORT_CS_LEN:
 //					cs_len = ran.nextInt(15) + 1;
 //					break;
 //				case Random:
-//					cs_len = ran.nextInt(300) + 1;
+//					cs_len = ran.nextInt(1000) + 1;
 //				default:
 //					break;
 //				}
-				switch (cs_len_range) {
-				case VERY_LONG_CSLEN:
-					cs_len = ran.nextInt(500) + 1;
-					break;
-				case LONG_CSLEN:
-					cs_len = ran.nextInt(300) + 1;
-					break;
-				case MEDIUM_CS_LEN:
-					cs_len = ran.nextInt(200) + 1;
-					break;
-				case SHORT_CS_LEN:
-					cs_len = ran.nextInt(600 ) + 1;
-					break;
-				case VERY_SHORT_CS_LEN:
-					cs_len = ran.nextInt(500) + 1;
-					break;
-				case Random:
-					cs_len = ran.nextInt(1000) + 1;
-				default:
-					break;
-				}
 			} else
 				cs_len = csl;
 
@@ -282,17 +282,22 @@ public class SimpleSystemGenerator {
 		while (tasks == null)
 			tasks = generateTasks();
 
+		int fatal_fails = 0;
 		int fails = 0;
 		long number_of_resource_requested_tasks = Math.round(rsf * tasks.size());
 
 		/* Generate resource usage */
 		for (long l = 0; l < number_of_resource_requested_tasks; l++) {
 			if (fails > 1000) {
+				if(fatal_fails > 10)
+					return null;
 				tasks = generateTasks();
 				while (tasks == null)
 					tasks = generateTasks();
 				l = 0;
-				fails++;
+				fails=0;
+				fatal_fails++;
+				System.err.println("System Generator: generation fails " + fatal_fails + " times.");
 			}
 			int task_index = ran.nextInt(tasks.size());
 			while (true) {
@@ -317,7 +322,7 @@ public class SimpleSystemGenerator {
 
 			long total_resource_execution_time = 0;
 			for (int k = 0; k < task.resource_required_index.size(); k++) {
-				int number_of_requests = ran.nextInt(number_of_max_access) + 1;
+				int number_of_requests = number_of_max_access;//ran.nextInt(number_of_max_access) + 1; //TODO
 				task.number_of_access_in_one_release.add(number_of_requests);
 				total_resource_execution_time += number_of_requests * resources.get(task.resource_required_index.get(k)).csl;
 			}
