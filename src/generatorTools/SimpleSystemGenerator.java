@@ -242,22 +242,22 @@ public class SimpleSystemGenerator {
 //				}
 				switch (cs_len_range) {
 				case VERY_LONG_CSLEN:
-					cs_len = ran.nextInt(500 - 300) + 301;
+					cs_len = ran.nextInt(500) + 1;
 					break;
 				case LONG_CSLEN:
-					cs_len = ran.nextInt(300 - 200) + 201;
+					cs_len = ran.nextInt(300) + 1;
 					break;
 				case MEDIUM_CS_LEN:
-					cs_len = ran.nextInt(200 - 100) + 101;
+					cs_len = ran.nextInt(200) + 1;
 					break;
 				case SHORT_CS_LEN:
-					cs_len = ran.nextInt(100 - 50) + 51;
+					cs_len = ran.nextInt(600 ) + 1;
 					break;
 				case VERY_SHORT_CS_LEN:
-					cs_len = ran.nextInt(50) + 1;
+					cs_len = ran.nextInt(500) + 1;
 					break;
 				case Random:
-					cs_len = ran.nextInt(500) + 1;
+					cs_len = ran.nextInt(1000) + 1;
 				default:
 					break;
 				}

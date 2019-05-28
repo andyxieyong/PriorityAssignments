@@ -27,13 +27,19 @@ public class Test {
 	public static void main(String[] args) throws Exception {
 		Test test = new Test();
 		HolistictTest holistic = new HolistictTest();
-		final CountDownLatch holisticCD = new CountDownLatch(6);
+		final CountDownLatch holisticCD = new CountDownLatch(6 * 2);
 		for (int i = 1; i < 7; i++) {
 			final int cslen = i;
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
 					test.PriorityOrder(holistic, cslen, true);
+					holisticCD.countDown();
+				}
+			}).start();
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
 					test.PriorityOrder(holistic, cslen, false);
 					holisticCD.countDown();
 				}
@@ -74,8 +80,8 @@ public class Test {
 			break;
 		}
 
-		SimpleSystemGenerator generator = new SimpleSystemGenerator(MIN_PERIOD, MAX_PERIOD, TOTAL_PARTITIONS, TOTAL_PARTITIONS * NoT, true, cs_range,
-				RESOURCES_RANGE.PARTITIONS, Rsf, NoA, SEED);
+		SimpleSystemGenerator generator = new SimpleSystemGenerator(MIN_PERIOD, MAX_PERIOD, TOTAL_PARTITIONS, TOTAL_PARTITIONS * NoT, true,
+				cs_range, RESOURCES_RANGE.PARTITIONS, Rsf, NoA, SEED);
 
 		String result = "";
 		String name = isMSRP ? "MSRP" : "MrsP";
@@ -105,10 +111,10 @@ public class Test {
 				DMok = true;
 			}
 
-			if (analysis.getResponseTimeRPA(tasks, resources, isMSRP)) {
-				RPA++;
-				RPAok = true;
-			}
+			// if (analysis.getResponseTimeRPA(tasks, resources, isMSRP)) {
+			// RPA++;
+			// RPAok = true;
+			// }
 
 			if (analysis.getResponseTimeOPA(tasks, resources, isMSRP)) {
 				OPA++;
@@ -143,11 +149,11 @@ public class Test {
 
 		}
 
-		result = name + " " + (double) DM / (double) TOTAL_NUMBER_OF_SYSTEMS + " " + (double) OPA / (double) TOTAL_NUMBER_OF_SYSTEMS + " "
-				+ (double) RPA / (double) TOTAL_NUMBER_OF_SYSTEMS + " " + (double) SBPO / (double) TOTAL_NUMBER_OF_SYSTEMS;
+		result = name + " " + (double) SBPO / (double) TOTAL_NUMBER_OF_SYSTEMS + " " + (double) DM / (double) TOTAL_NUMBER_OF_SYSTEMS + " "
+				+ (double) OPA / (double) TOTAL_NUMBER_OF_SYSTEMS + " " + (double) RPA / (double) TOTAL_NUMBER_OF_SYSTEMS;
 
-		result += " " + DMcannotOPAcan + " " + DMcanOPAcannot + " " + DMcannotSBPOcan + " " + DMcanSBPOcannot + " " + OPAcanSBPOcannot + " " + OPAcannotSBPOcan
-				+ "\n";
+		result += " " + DMcannotOPAcan + " " + DMcanOPAcannot + " " + DMcannotSBPOcan + " " + DMcanSBPOcannot + " " + OPAcanSBPOcannot + " "
+				+ OPAcannotSBPOcan + "\n";
 
 		writeSystem((SEED + " " + name + " " + 2 + " " + 4 + " " + cs_len), result);
 	}
