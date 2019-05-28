@@ -62,10 +62,10 @@ public class Test {
 		}
 
 		holisticCD.await();
-		
+
 		double[] range = new double[times];
-		for(int i=0; i<times;i++)
-			range[i] = NoA+5*i;
+		for (int i = 0; i < times; i++)
+			range[i] = NoA + 5 * i;
 
 		ResultReader.priorityReader(SEED, NoP, NoT, -1, rsf, cslen, range);
 	}
@@ -133,14 +133,16 @@ public class Test {
 			// RPAok = true;
 			// }
 
-			// if (analysis.getResponseTimeOPA(tasks, resources, isMSRP)) {
-			// OPA++;
-			// OPAok = true;
-			// }
-
-			if (analysis.getResponseTimeSPO(tasks, resources, isMSRP)) {
+			if (analysis.getResponseTimeOPA(tasks, resources, isMSRP)) {
+				OPA++;
+				OPAok = true;
 				SBPO++;
 				SBPOok = true;
+			} else {
+				if (analysis.getResponseTimeSPO(tasks, resources, isMSRP)) {
+					SBPO++;
+					SBPOok = true;
+				}
 			}
 
 			if (!DMok && OPAok)
@@ -169,7 +171,7 @@ public class Test {
 		result = name + " " + (double) SBPO / (double) TOTAL_NUMBER_OF_SYSTEMS + " " + (double) DM / (double) TOTAL_NUMBER_OF_SYSTEMS + " "
 				+ (double) OPA / (double) TOTAL_NUMBER_OF_SYSTEMS + " " + (double) RPA / (double) TOTAL_NUMBER_OF_SYSTEMS;
 
-		result += " " + DMcannotOPAcan + " " + DMcanOPAcannot + " " + DMcannotSBPOcan + " " + DMcanSBPOcannot + " " + OPAcanSBPOcannot + " " + OPAcannotSBPOcan
+		result += " " + DMcannotSBPOcan + " " + DMcanSBPOcannot + " " + DMcannotOPAcan + " " + DMcanOPAcannot + " " + OPAcanSBPOcannot + " " + OPAcannotSBPOcan
 				+ "\n";
 
 		writeSystem((SEED + " " + name + " " + NoP + " " + NoT + " " + NoA + " " + rsf + " " + cs_len), result);
