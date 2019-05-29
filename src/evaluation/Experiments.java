@@ -12,7 +12,6 @@ import java.util.concurrent.CountDownLatch;
 import analysisWithPriority.HolistictTest;
 import analysisWithPriority.MSRPOriginal;
 import analysisWithPriority.MrsPOriginal;
-import analysisWithPriority.OriginalTest;
 import entity.Resource;
 import entity.SporadicTask;
 import generatorTools.SimpleSystemGenerator;
@@ -34,71 +33,66 @@ public class Experiments {
 	}
 
 	public static void main(String args[]) throws Exception {
+		EP1();
+		EP2();
 		EP3();
 	}
 
 	public static void EP1() {
+		int times = 1000;
 		try {
-			access(1000, true, true);
+			access(times, 16, 4, 1, 0.4, 1, true);
+			access(times, 16, 4, 1, 0.25, 3, false);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
 	public static void EP2() {
+		int times = 1000;
 		try {
-			csl(1000, true, true);
+			// long[][] MSRPrange = { { 1, 15 }, { 15, 30 }, { 30, 50 }, { 50,
+			// 75 }, { 75, 100 }, { 100, 150 }, { 150, 200 }, { 1, 200 } };
+			// csl(times, 16, 3, 30, 0.45, true, MSRPrange);
+
+			long[][] MrsPrange = { { 1, 15 }, { 15, 50 }, { 50, 100 }, { 100, 200 }, { 200, 300 }, { 300, 400 }, { 400, 500 }, { 1, 500 } };
+			csl(times, 16, 3, 10, 0.4, false, MrsPrange);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
 	public static void EP3() {
 		int times = 10000;
 		try {
-			access(times, true, false);
-			csl(times, false, true);
+//			access(times, 16, 4, 1, 0.4, 1, true);
+			long[][] MrsPrange = { { 1, 15 }, { 15, 50 }, { 50, 100 }, { 100, 200 }, { 200, 300 }, { 300, 400 }, { 400, 500 }, { 1, 500 } };
+			csl(times, 16, 3, 10, 0.4, false, MrsPrange);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
-	public static void access(int TOTAL_NUMBER_OF_SYSTEMS, boolean useMSRP, boolean useMrsP) throws Exception {
-		int NoP = 16;
-		int NoT = 4;
-		int NoA = 1;
-		double rsf = 0.4;
-		int cslen = 1;
+	public static void access(int TOTAL_NUMBER_OF_SYSTEMS, int NoP, int NoT, int NoA, double rsf, int cslen, boolean useMSRP) throws Exception {
 
 		int incrementor = 5;
 		int times = 11;
 
 		Experiments test = new Experiments();
-		HolistictTest holistic = new HolistictTest();
-		OriginalTest origin = new OriginalTest();
 
-		int countTime = useMSRP && useMrsP ? times * 2 : times;
-
-		final CountDownLatch holisticCD = new CountDownLatch(countTime);
+		final CountDownLatch holisticCD = new CountDownLatch(times);
 		for (int i = 0; i < times; i++) {
 			final int counter = i;
 			if (useMSRP) {
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						test.PriorityOrder(holistic, origin, NoP, NoT, NoA + incrementor * counter, rsf, cslen, true, TOTAL_NUMBER_OF_SYSTEMS);
+						test.PriorityOrder(NoP, NoT, NoA + incrementor * counter, rsf, cslen, true, null, TOTAL_NUMBER_OF_SYSTEMS);
 						test.countDown(holisticCD);
 					}
 				}).start();
-			}
-			if (useMrsP) {
+			} else {
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						test.PriorityOrder(holistic, origin, NoP, NoT, NoA + incrementor * counter, rsf, cslen, false, TOTAL_NUMBER_OF_SYSTEMS);
+						test.PriorityOrder(NoP, NoT, NoA + incrementor * counter, rsf, cslen, false, null, TOTAL_NUMBER_OF_SYSTEMS);
 						test.countDown(holisticCD);
 					}
 				}).start();
@@ -112,40 +106,30 @@ public class Experiments {
 		for (int i = 0; i < times; i++)
 			range[i] = NoA + incrementor * i;
 
-		ResultReader.priorityReader(SEED, NoP, NoT, -1, rsf, cslen, range);
+		ResultReader.priorityReader(SEED, useMSRP, NoP, NoT, -1, rsf, cslen, range);
 	}
 
-	public static void csl(int TOTAL_NUMBER_OF_SYSTEMS, boolean useMSRP, boolean useMrsP) throws Exception {
-		int NoP = 16;
-		int NoT = 3;
-		int NoA = 10;
-		double rsf = 0.4;
+	public static void csl(int TOTAL_NUMBER_OF_SYSTEMS, int NoP, int NoT, int NoA, double rsf, boolean useMSRP, long[][] cslRnage) throws Exception {
 
 		int times = 8;
 		Experiments test = new Experiments();
-		HolistictTest holistic = new HolistictTest();
-		OriginalTest origin = new OriginalTest();
 
-		int countTime = useMSRP && useMrsP ? times * 2 : times;
-
-		final CountDownLatch holisticCD = new CountDownLatch(countTime);
+		final CountDownLatch holisticCD = new CountDownLatch(times);
 		for (int i = 1; i <= times; i++) {
 			final int counter = i;
 			if (useMSRP) {
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						test.PriorityOrder(holistic, origin, NoP, NoT, NoA, rsf, counter, true, TOTAL_NUMBER_OF_SYSTEMS);
+						test.PriorityOrder(NoP, NoT, NoA, rsf, counter, true, cslRnage, TOTAL_NUMBER_OF_SYSTEMS);
 						test.countDown(holisticCD);
 					}
 				}).start();
-			}
-
-			if (useMrsP) {
+			} else {
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						test.PriorityOrder(holistic, origin, NoP, NoT, NoA, rsf, counter, false, TOTAL_NUMBER_OF_SYSTEMS);
+						test.PriorityOrder(NoP, NoT, NoA, rsf, counter, false, cslRnage, TOTAL_NUMBER_OF_SYSTEMS);
 						test.countDown(holisticCD);
 					}
 				}).start();
@@ -158,14 +142,15 @@ public class Experiments {
 		for (int i = 1; i <= times; i++)
 			range[i - 1] = i;
 
-		ResultReader.priorityReader(SEED, NoP, NoT, NoA, rsf, -1, range);
+		ResultReader.priorityReader(SEED, useMSRP, NoP, NoT, NoA, rsf, -1, range);
 	}
 
-	public void PriorityOrder(HolistictTest holistic, OriginalTest original, int NoP, int NoT, int NoA, double rsf, int cs_len, boolean isMSRP,
-			int TOTAL_NUMBER_OF_SYSTEMS) {
+	public void PriorityOrder(int NoP, int NoT, int NoA, double rsf, int cs_len, boolean isMSRP, long[][] cslRnage, int TOTAL_NUMBER_OF_SYSTEMS) {
+
+		HolistictTest holistic = new HolistictTest();
 
 		SimpleSystemGenerator generator = new SimpleSystemGenerator(MIN_PERIOD, MAX_PERIOD, NoP, NoP * NoT, true, cs_len, RESOURCES_RANGE.PARTITIONS, rsf, NoA,
-				SEED);
+				SEED, cslRnage);
 
 		String result = "";
 		String name = isMSRP ? "MSRP" : "MrsP";

@@ -5,7 +5,6 @@ import java.util.Random;
 
 import entity.Resource;
 import entity.SporadicTask;
-import utils.AnalysisUtils.CS_LENGTH_RANGE;
 import utils.AnalysisUtils.RESOURCES_RANGE;
 
 public class SimpleSystemGenerator {
@@ -26,8 +25,10 @@ public class SimpleSystemGenerator {
 	boolean print;
 	Random ran;
 
+	long[][] cslRange = null;
+
 	public SimpleSystemGenerator(int minT, int maxT, int total_partitions, int totalTasks, boolean isPeriodLogUni, int cs_len_range,
-			RESOURCES_RANGE numberOfResources, double rsf, int number_of_max_access, int seed) {
+			RESOURCES_RANGE numberOfResources, double rsf, int number_of_max_access, int seed, long[][] cslRnage) {
 		this.minT = minT;
 		this.maxT = maxT;
 		this.totalUtil = 0.1 * (double) totalTasks;
@@ -40,6 +41,8 @@ public class SimpleSystemGenerator {
 		this.number_of_max_access = number_of_max_access;
 		this.print = false;
 		this.ran = new Random(seed);
+
+		this.cslRange = cslRnage;
 	}
 
 	/*
@@ -219,81 +222,62 @@ public class SimpleSystemGenerator {
 		for (int i = 0; i < number_of_resources; i++) {
 			long cs_len = 0;
 			if (csl == -1) {
-//				switch (cs_len_range) {
-//				case VERY_LONG_CSLEN:
-//					cs_len = ran.nextInt(300 - 200) + 201;
-//					break;
-//				case LONG_CSLEN:
-//					cs_len = ran.nextInt(200 - 100) + 101;
-//					break;
-//				case MEDIUM_CS_LEN:
-//					cs_len = ran.nextInt(100 - 50) + 51;
-//					break;
-//				case SHORT_CS_LEN:
-//					cs_len = ran.nextInt(50 - 15) + 16;
-//					break;
-//				case VERY_SHORT_CS_LEN:
-//					cs_len = ran.nextInt(15) + 1;
-//					break;
-//				case Random:
-//					cs_len = ran.nextInt(300) + 1;
-//				default:
-//					break;
-//				}
-				switch (cs_len_range) {
-				case 1:
-					cs_len = ran.nextInt(15) + 1;
-					break;
-				case 2:
-					cs_len = ran.nextInt(35) + 16;
-					break;
-				case 3:
-					cs_len = ran.nextInt(50) + 51;
-					break;
-				case 4:
-					cs_len = ran.nextInt(100) + 101;
-					break;
-				case 5:
-					cs_len = ran.nextInt(100) + 201;
-					break;
-				case 6:
-					cs_len = ran.nextInt(100) + 301;
-					break;
-				case 7:
-					cs_len = ran.nextInt(100) + 401;
-					break;
-				case 8:
-					cs_len = ran.nextInt(500) + 1;
-					break;
-//				case 9:
-//					cs_len = ran.nextInt(15) + 1;
-//					break;
-//				case 10:
-//					cs_len = ran.nextInt(1000) + 1;
-				default:
-					break;
+				// switch (cs_len_range) {
+				// case VERY_LONG_CSLEN:
+				// cs_len = ran.nextInt(300 - 200) + 201;
+				// break;
+				// case LONG_CSLEN:
+				// cs_len = ran.nextInt(200 - 100) + 101;
+				// break;
+				// case MEDIUM_CS_LEN:
+				// cs_len = ran.nextInt(100 - 50) + 51;
+				// break;
+				// case SHORT_CS_LEN:
+				// cs_len = ran.nextInt(50 - 15) + 16;
+				// break;
+				// case VERY_SHORT_CS_LEN:
+				// cs_len = ran.nextInt(15) + 1;
+				// break;
+				// case Random:
+				// cs_len = ran.nextInt(300) + 1;
+				// default:
+				// break;
+				// }
+				if (cslRange == null) {
+					switch (cs_len_range) {
+					case 1:
+						cs_len = ran.nextInt(15) + 1;
+						break;
+					case 2:
+						cs_len = ran.nextInt(35) + 16;
+						break;
+					case 3:
+						cs_len = ran.nextInt(50) + 51;
+						break;
+					case 4:
+						cs_len = ran.nextInt(100) + 101;
+						break;
+					case 5:
+						cs_len = ran.nextInt(100) + 201;
+						break;
+					case 6:
+						cs_len = ran.nextInt(100) + 301;
+						break;
+					case 7:
+						cs_len = ran.nextInt(100) + 401;
+						break;
+					case 8:
+						cs_len = ran.nextInt(500) + 1;
+						break;
+					default:
+						break;
+					}
+				} else {
+					int lowB = (int) cslRange[cs_len_range-1][0];
+					int highB = (int) cslRange[cs_len_range-1][1];
+					cs_len = ran.nextInt(highB - lowB) + lowB;
 				}
-//				switch (cs_len_range) {
-//				case VERY_LONG_CSLEN:
-//					cs_len = ran.nextInt(800) + 1;
-//					break;
-//				case LONG_CSLEN:
-//					cs_len = ran.nextInt(600) + 1;
-//					break;
-//				case MEDIUM_CS_LEN:
-//					cs_len = ran.nextInt(400) + 1;
-//					break;
-//				case SHORT_CS_LEN:
-//					cs_len = ran.nextInt(200 ) + 1;
-//					break;
-//				case VERY_SHORT_CS_LEN:
-//					cs_len = ran.nextInt(15) + 1;
-//					break;
-//				case Random:
-//					cs_len = ran.nextInt(1000) + 1;
-//				default:
-//					break;
-//				}
+
 			} else
 				cs_len = csl;
 
@@ -322,13 +306,13 @@ public class SimpleSystemGenerator {
 		/* Generate resource usage */
 		for (long l = 0; l < number_of_resource_requested_tasks; l++) {
 			if (fails > 1000) {
-				if(fatal_fails > 10)
+				if (fatal_fails > 10)
 					return null;
 				tasks = generateTasks();
 				while (tasks == null)
 					tasks = generateTasks();
 				l = 0;
-				fails=0;
+				fails = 0;
 				fatal_fails++;
 				System.err.println("System Generator: generation fails " + fatal_fails + " times.");
 			}
@@ -355,7 +339,8 @@ public class SimpleSystemGenerator {
 
 			long total_resource_execution_time = 0;
 			for (int k = 0; k < task.resource_required_index.size(); k++) {
-				int number_of_requests = ran.nextInt(number_of_max_access) + 1; //TODO number_of_max_access;//
+				int number_of_requests = ran.nextInt(number_of_max_access) + 1; // TODO
+																				// number_of_max_access;//
 				task.number_of_access_in_one_release.add(number_of_requests);
 				total_resource_execution_time += number_of_requests * resources.get(task.resource_required_index.get(k)).csl;
 			}
