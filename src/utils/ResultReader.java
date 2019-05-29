@@ -25,8 +25,8 @@ public class ResultReader {
 		String result = "\n\nMSRP \n";
 
 		for (int i = 0; i < range.length; i++) {
-			String filepath = "result/" + seed + " " + "MSRP" + " " + (int)(NoP == -1 ? range[i] : NoP) + " " + (int)(NoT == -1 ? range[i] : NoT) + " "
-					+ (int)(NoA == -1 ? range[i] : NoA) + " " + (rsf == -1 ? range[i] : rsf) + " " + (int)(cs_len == -1 ? range[i] : cs_len) + ".txt";
+			String filepath = "result/" + seed + " " + "MSRP" + " " + (int) (NoP == -1 ? range[i] : NoP) + " " + (int) (NoT == -1 ? range[i] : NoT) + " "
+					+ (int) (NoA == -1 ? range[i] : NoA) + " " + (rsf == -1 ? range[i] : rsf) + " " + (int) (cs_len == -1 ? range[i] : cs_len) + ".txt";
 
 			List<String> lines = null;
 			try {
@@ -41,8 +41,8 @@ public class ResultReader {
 		result += "\n\nMrsP \n";
 
 		for (int i = 0; i < range.length; i++) {
-			String filepath = "result/" + seed + " " + "MrsP" + " " + (int)(NoP == -1 ? range[i] : NoP) + " " + (int)(NoT == -1 ? range[i] : NoT) + " "
-					+ (int)(NoA == -1 ? range[i] : NoA) + " " + (rsf == -1 ? range[i] : rsf) + " " + (int)(cs_len == -1 ? range[i] : cs_len) + ".txt";
+			String filepath = "result/" + seed + " " + "MrsP" + " " + (int) (NoP == -1 ? range[i] : NoP) + " " + (int) (NoT == -1 ? range[i] : NoT) + " "
+					+ (int) (NoA == -1 ? range[i] : NoA) + " " + (rsf == -1 ? range[i] : rsf) + " " + (int) (cs_len == -1 ? range[i] : cs_len) + ".txt";
 
 			List<String> lines = null;
 			try {
@@ -58,7 +58,8 @@ public class ResultReader {
 
 		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter(new FileWriter(new File("result/all.txt"), false));
+			writer = new PrintWriter(new FileWriter(new File("result/All " + seed + (NoP == -1 ? "" : " " + (int) NoP) + (NoT == -1 ? "" : " " + (int) NoT)
+					+ (NoA == -1 ? "" : " " + (int) NoA) + (rsf == -1 ? "" : " " + rsf)+ (cs_len == -1 ? "" : " " + (int) cs_len) + ".txt"), false));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {

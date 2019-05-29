@@ -10,14 +10,13 @@ import utils.AnalysisUtils;
 public class OriginalTest {
 	long count = 0;
 
-	public long[][] getResponseTimeDM(ArrayList<ArrayList<SporadicTask>> tasks, ArrayList<Resource> resources, boolean btbHit, boolean useRi, boolean isMSRP,
-			boolean printDebug) {
+	public boolean getResponseTimeDM(ArrayList<ArrayList<SporadicTask>> tasks, ArrayList<Resource> resources, boolean isMSRP) {
 		if (tasks == null)
-			return null;
+			return false;
 
 		// assign priorities by Deadline Monotonic
 		tasks = new PriorityGeneator().assignPrioritiesByDM(tasks);
-		
+
 		long[][] init_Ri = new AnalysisUtils().initResponseTime(tasks);
 
 		long[][] response_time = new long[tasks.size()][];
@@ -50,16 +49,10 @@ public class OriginalTest {
 				break;
 		}
 
-		if (printDebug) {
-			if (missDeadline)
-				System.out.println("MSRPRTA    after " + count + " tims of recursion, the tasks miss the deadline.");
-			else
-				System.out.println("MSRPRTA	   after " + count + " tims of recursion, we got the response time.");
-
-			new AnalysisUtils().printResponseTime(response_time, tasks);
-		}
-
-		return response_time;
+		if (new AnalysisUtils().isSystemSchedulable(tasks, response_time))
+			return true;
+		else
+			return false;
 	}
 
 	private long[][] busyWindow(ArrayList<ArrayList<SporadicTask>> tasks, ArrayList<Resource> resources, long[][] response_time, boolean isMSRP) {
