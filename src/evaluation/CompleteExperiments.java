@@ -6,8 +6,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
+
+import com.sun.xml.internal.ws.util.StringUtils;
 
 import analysisWithPriority.HolistictTest;
 import analysisWithPriority.MSRPOriginal;
@@ -31,48 +39,125 @@ public class CompleteExperiments {
 	}
 
 	public static void main(String args[]) throws Exception {
-		int[] NoP = { 16 };
-		int[] NoT = { 7 };
-		int[] NoA = { 10, 15 };
+		int[] NoP = { 8, 12, 16 };
+		int[] NoT = { 3, 4, 5, 6, 7 };
+		int[] NoA = {1,/* 2, 5, 10, 15*/20 };
 		double[] RSF = { 0.2, 0.3, 0.4 };
 		int[] CSL = { 1, 2, 3, 4, 5, 6, 7, 8 };
 		int times = 1000;
 
 		CompleteExperiments ep = new CompleteExperiments();
 
+		// for (int p = 0; p < NoP.length; p++) {
+		// for (int t = 0; t < NoT.length; t++) {
+		// for (int a = 0; a < NoA.length; a++) {
+		// CountDownLatch cd = new CountDownLatch(RSF.length * CSL.length * 2);
+		//
+		// for (int r = 0; r < RSF.length; r++) {
+		// for (int l = 0; l < CSL.length; l++) {
+		//
+		// final int nop = p, not = t, noa = a, rsf = r, csl = l;
+		//
+		// new Thread(new Runnable() {
+		// @Override
+		// public void run() {
+		// ep.PriorityOrder(NoP[nop], NoT[not], NoA[noa], RSF[rsf], CSL[csl],
+		// true, null, times);
+		// ep.countDown(cd);
+		// }
+		// }).start();
+		//
+		// new Thread(new Runnable() {
+		// @Override
+		// public void run() {
+		// ep.PriorityOrder(NoP[nop], NoT[not], NoA[noa], RSF[rsf], CSL[csl],
+		// false, null, times);
+		// ep.countDown(cd);
+		// }
+		// }).start();
+		//
+		// }
+		// }
+		// cd.await();
+		// }
+		// }
+		// }
+
+		String result = "MSRP Results:\n";
+
 		for (int p = 0; p < NoP.length; p++) {
 			for (int t = 0; t < NoT.length; t++) {
 				for (int a = 0; a < NoA.length; a++) {
-					CountDownLatch cd = new CountDownLatch(RSF.length * CSL.length * 2);
-
 					for (int r = 0; r < RSF.length; r++) {
 						for (int l = 0; l < CSL.length; l++) {
+							String filepath = "result/" + SEED + " " + "MSRP" + " " + NoP[p] + " " + NoT[t] + " " + NoA[a] + " " + RSF[r] + " " + CSL[l]
+									+ ".txt";
 
-							final int nop = p, not = t, noa = a, rsf = r, csl = l;
-
-							new Thread(new Runnable() {
-								@Override
-								public void run() {
-									ep.PriorityOrder(NoP[nop], NoT[not], NoA[noa], RSF[rsf], CSL[csl], true, null, times);
-									ep.countDown(cd);
-								}
-							}).start();
-
-							new Thread(new Runnable() {
-								@Override
-								public void run() {
-									ep.PriorityOrder(NoP[nop], NoT[not], NoA[noa], RSF[rsf], CSL[csl], false, null, times);
-									ep.countDown(cd);
-								}
-							}).start();
+							List<String> lines = null;
+							try {
+								lines = Files.readAllLines(Paths.get(filepath), StandardCharsets.UTF_8);
+							} catch (IOException e) {
+							}
+							if (lines != null) {
+								String[] res = lines.get(0).split(" ");
+								String[] processed = Arrays.copyOfRange(res, 1, res.length);
+								String out = Arrays.stream(processed).collect(Collectors.joining(" "));
+								result += NoP[p] + " " + NoT[t] + " " + NoA[a] + " " + RSF[r] + " " + CSL[l] + ":  " + out + "\n";
+							} else {
+								System.err.println("No Results in " + filepath);
+							}
 
 						}
 					}
-					cd.await();
 				}
 			}
 		}
 
+		result += "\n\nMrsP Results:\n";
+
+		for (int p = 0; p < NoP.length; p++) {
+			for (int t = 0; t < NoT.length; t++) {
+				for (int a = 0; a < NoA.length; a++) {
+					for (int r = 0; r < RSF.length; r++) {
+						for (int l = 0; l < CSL.length; l++) {
+							String filepath = "result/" + SEED + " " + "MrsP" + " " + NoP[p] + " " + NoT[t] + " " + NoA[a] + " " + RSF[r] + " " + CSL[l]
+									+ ".txt";
+
+							List<String> lines = null;
+							try {
+								lines = Files.readAllLines(Paths.get(filepath), StandardCharsets.UTF_8);
+							} catch (IOException e) {
+							}
+							if (lines != null) {
+								String[] res = lines.get(0).split(" ");
+								String[] processed = Arrays.copyOfRange(res, 1, res.length);
+								String out = Arrays.stream(processed).collect(Collectors.joining(" "));
+								result += NoP[p] + " " + NoT[t] + " " + NoA[a] + " " + RSF[r] + " " + CSL[l] + ":  " + out + "\n";
+							} else {
+								System.err.println("No Results in " + filepath);
+							}
+
+						}
+					}
+				}
+			}
+		}
+
+		System.out.println(result);
+
+		PrintWriter writer = null;
+		try {
+			writer = new PrintWriter(new FileWriter(new File("result/All.txt"), false));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		writer.println(result);
+		writer.close();
 	}
 
 	public void PriorityOrder(int NoP, int NoT, int NoA, double rsf, int cs_len, boolean isMSRP, long[][] cslRnage, int TOTAL_NUMBER_OF_SYSTEMS) {

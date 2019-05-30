@@ -19,7 +19,7 @@ import utils.AnalysisUtils;
 import utils.AnalysisUtils.RESOURCES_RANGE;
 import utils.ResultReader;
 
-public class CompleteInPaper {
+public class ExperimentsInPaper {
 	public static int MAX_PERIOD = 1000;
 	public static int MIN_PERIOD = 1;
 	public static int SEED = 1000;
@@ -73,7 +73,7 @@ public class CompleteInPaper {
 		int incrementor = 5;
 		int times = 11;
 
-		CompleteInPaper test = new CompleteInPaper();
+		ExperimentsInPaper test = new ExperimentsInPaper();
 
 		final CountDownLatch holisticCD = new CountDownLatch(times);
 		for (int i = 0; i < times; i++) {
@@ -110,7 +110,7 @@ public class CompleteInPaper {
 	public static void csl(int TOTAL_NUMBER_OF_SYSTEMS, int NoP, int NoT, int NoA, double rsf, boolean useMSRP, long[][] cslRnage) throws Exception {
 
 		int times = 8;
-		CompleteInPaper test = new CompleteInPaper();
+		ExperimentsInPaper test = new ExperimentsInPaper();
 
 		final CountDownLatch holisticCD = new CountDownLatch(times);
 		for (int i = 1; i <= times; i++) {
