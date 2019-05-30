@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
-import com.sun.xml.internal.ws.util.StringUtils;
-
 import analysisWithPriority.HolistictTest;
 import analysisWithPriority.MSRPOriginal;
 import analysisWithPriority.MrsPOriginal;
@@ -99,7 +97,7 @@ public class CompleteExperiments {
 							if (lines != null) {
 								String[] res = lines.get(0).split(" ");
 								String[] processed = Arrays.copyOfRange(res, 1, res.length);
-								String out = Arrays.stream(processed).collect(Collectors.joining(" "));
+								String out = String.join(", ", processed);
 								result += NoP[p] + " " + NoT[t] + " " + NoA[a] + " " + RSF[r] + " " + CSL[l] + ":  " + out + "\n";
 							} else {
 								System.err.println("No Results in " + filepath);
@@ -129,7 +127,7 @@ public class CompleteExperiments {
 							if (lines != null) {
 								String[] res = lines.get(0).split(" ");
 								String[] processed = Arrays.copyOfRange(res, 1, res.length);
-								String out = Arrays.stream(processed).collect(Collectors.joining(" "));
+								String out = String.join(", ", processed);
 								result += NoP[p] + " " + NoT[t] + " " + NoA[a] + " " + RSF[r] + " " + CSL[l] + ":  " + out + "\n";
 							} else {
 								System.err.println("No Results in " + filepath);
