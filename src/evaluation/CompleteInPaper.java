@@ -19,7 +19,7 @@ import utils.AnalysisUtils;
 import utils.AnalysisUtils.RESOURCES_RANGE;
 import utils.ResultReader;
 
-public class Experiments {
+public class CompleteInPaper {
 	public static int MAX_PERIOD = 1000;
 	public static int MIN_PERIOD = 1;
 	public static int SEED = 1000;
@@ -33,9 +33,8 @@ public class Experiments {
 	}
 
 	public static void main(String args[]) throws Exception {
-		EP1();
-		EP2();
 		EP3();
+		
 	}
 
 	public static void EP1() {
@@ -50,9 +49,8 @@ public class Experiments {
 	public static void EP2() {
 		int times = 1000;
 		try {
-			// long[][] MSRPrange = { { 1, 15 }, { 15, 30 }, { 30, 50 }, { 50,
-			// 75 }, { 75, 100 }, { 100, 150 }, { 150, 200 }, { 1, 200 } };
-			// csl(times, 16, 3, 30, 0.45, true, MSRPrange);
+			long[][] MSRPrange = { { 1, 15 }, { 15, 30 }, { 30, 50 }, { 50, 75 }, { 75, 100 }, { 100, 150 }, { 150, 200 }, { 1, 200 } };
+			csl(times, 16, 3, 30, 0.45, true, MSRPrange);
 
 			long[][] MrsPrange = { { 1, 15 }, { 15, 50 }, { 50, 100 }, { 100, 200 }, { 200, 300 }, { 300, 400 }, { 400, 500 }, { 1, 500 } };
 			csl(times, 16, 3, 10, 0.4, false, MrsPrange);
@@ -63,7 +61,7 @@ public class Experiments {
 	public static void EP3() {
 		int times = 10000;
 		try {
-//			access(times, 16, 4, 1, 0.4, 1, true);
+			access(times, 16, 4, 1, 0.4, 1, true);
 			long[][] MrsPrange = { { 1, 15 }, { 15, 50 }, { 50, 100 }, { 100, 200 }, { 200, 300 }, { 300, 400 }, { 400, 500 }, { 1, 500 } };
 			csl(times, 16, 3, 10, 0.4, false, MrsPrange);
 		} catch (Exception e) {
@@ -75,7 +73,7 @@ public class Experiments {
 		int incrementor = 5;
 		int times = 11;
 
-		Experiments test = new Experiments();
+		CompleteInPaper test = new CompleteInPaper();
 
 		final CountDownLatch holisticCD = new CountDownLatch(times);
 		for (int i = 0; i < times; i++) {
@@ -112,7 +110,7 @@ public class Experiments {
 	public static void csl(int TOTAL_NUMBER_OF_SYSTEMS, int NoP, int NoT, int NoA, double rsf, boolean useMSRP, long[][] cslRnage) throws Exception {
 
 		int times = 8;
-		Experiments test = new Experiments();
+		CompleteInPaper test = new CompleteInPaper();
 
 		final CountDownLatch holisticCD = new CountDownLatch(times);
 		for (int i = 1; i <= times; i++) {
