@@ -257,7 +257,7 @@ public class CompleteExperiments {
 
 			if (!OPAok && SBPOok)
 				OPAcannotSBPOcan++;
-			System.out.println(name + " " + NoP + " " + NoT + " " + NoA + " " + rsf + " " + cs_len + " times: " + i);
+//			System.out.println(name + " " + NoP + " " + NoT + " " + NoA + " " + rsf + " " + cs_len + " times: " + i);
 		}
 
 		System.out.println(name + " " + NoP + " " + NoT + " " + NoA + " " + rsf + " " + cs_len + " Finished.");
