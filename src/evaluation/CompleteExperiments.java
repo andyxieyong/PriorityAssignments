@@ -31,9 +31,9 @@ public class CompleteExperiments {
 	}
 
 	public static void main(String args[]) throws Exception {
-		int[] NoP = {  16 };
+		int[] NoP = { 16 };
 		int[] NoT = { 7 };
-		int[] NoA = {10, 15 };
+		int[] NoA = { 10, 15 };
 		double[] RSF = { 0.2, 0.3, 0.4 };
 		int[] CSL = { 1, 2, 3, 4, 5, 6, 7, 8 };
 		int times = 1000;
@@ -41,71 +41,37 @@ public class CompleteExperiments {
 		CompleteExperiments ep = new CompleteExperiments();
 
 		for (int p = 0; p < NoP.length; p++) {
-			for (int a = 0; a < NoA.length; a++) {
+			for (int t = 0; t < NoT.length; t++) {
+				for (int a = 0; a < NoA.length; a++) {
+					CountDownLatch cd = new CountDownLatch(RSF.length * CSL.length * 2);
 
-				for (int r = 0; r < RSF.length; r++) {
-					CountDownLatch cd = new CountDownLatch(CSL.length * 2);
-					for (int l = 0; l < CSL.length; l++) {
+					for (int r = 0; r < RSF.length; r++) {
+						for (int l = 0; l < CSL.length; l++) {
 
-						final int nop = p, noa = a, rsf = r, csl = l;
+							final int nop = p, not = t, noa = a, rsf = r, csl = l;
 
-						new Thread(new Runnable() {
-							@Override
-							public void run() {
-								ep.PriorityOrder(NoP[nop], 7, NoA[noa], RSF[rsf], CSL[csl], true, null, times);
-								ep.countDown(cd);
-							}
-						}).start();
+							new Thread(new Runnable() {
+								@Override
+								public void run() {
+									ep.PriorityOrder(NoP[nop], NoT[not], NoA[noa], RSF[rsf], CSL[csl], true, null, times);
+									ep.countDown(cd);
+								}
+							}).start();
 
-						new Thread(new Runnable() {
-							@Override
-							public void run() {
-								ep.PriorityOrder(NoP[nop], 7, NoA[noa], RSF[rsf], CSL[csl], false, null, times);
-								ep.countDown(cd);
-							}
-						}).start();
+							new Thread(new Runnable() {
+								@Override
+								public void run() {
+									ep.PriorityOrder(NoP[nop], NoT[not], NoA[noa], RSF[rsf], CSL[csl], false, null, times);
+									ep.countDown(cd);
+								}
+							}).start();
 
+						}
 					}
 					cd.await();
 				}
-
 			}
 		}
-
-		// for (int p = 0; p < NoP.length; p++) {
-		// for (int t = 0; t < NoT.length; t++) {
-		// for (int a = 0; a < NoA.length; a++) {
-		// CountDownLatch cd = new CountDownLatch(RSF.length * CSL.length * 2);
-		//
-		// for (int r = 0; r < RSF.length; r++) {
-		// for (int l = 0; l < CSL.length; l++) {
-		//
-		// final int nop = p, not = t, noa = a, rsf = r, csl = l;
-		//
-		// new Thread(new Runnable() {
-		// @Override
-		// public void run() {
-		// ep.PriorityOrder(NoP[nop], NoT[not], NoA[noa], RSF[rsf], CSL[csl],
-		// true, null, times);
-		// ep.countDown(cd);
-		// }
-		// }).start();
-		//
-		// new Thread(new Runnable() {
-		// @Override
-		// public void run() {
-		// ep.PriorityOrder(NoP[nop], NoT[not], NoA[noa], RSF[rsf], CSL[csl],
-		// false, null, times);
-		// ep.countDown(cd);
-		// }
-		// }).start();
-		//
-		// }
-		// }
-		// cd.await();
-		// }
-		// }
-		// }
 
 	}
 
